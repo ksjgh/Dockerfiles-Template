@@ -1,5 +1,5 @@
 ## pull pre-built image
-docker pull ksjdk/deep-learning
+docker pull ksjdk/deep-learning:pytorch04-cu80-py36-gpu
 
 ## To build docker image
 edit 'docker-build.sh'</br>
