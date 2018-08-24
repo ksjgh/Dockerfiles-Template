@@ -6,11 +6,12 @@
 # cuDNN		7
 # python        3.6    (apt)
 # jupyter       latest (pip)
-# pytorch       0.4.0  (pip)
+# pytorch       0.4.0  (pip) : CUDA dependent
 # opencv        3.4.1  (git)
 # ==================================================================
 
 FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+
 RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
     PIP_INSTALL="python -m pip --no-cache-dir install --upgrade" && \
     GIT_CLONE="git clone --depth 10" && \
@@ -20,17 +21,16 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
            /etc/apt/sources.list.d/nvidia-ml.list && \
 
     apt-get update && \
+
 # ==================================================================
 # tools
 # ------------------------------------------------------------------
-
-    DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
+   DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
         build-essential \
         ca-certificates \
         cmake \
         wget \
         git \
-        vim \
         && \
 
 # ==================================================================
@@ -69,7 +69,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 
     $PIP_INSTALL \
         jupyter \
-        && \
+	&& \
 
 
 # ==================================================================
@@ -77,14 +77,23 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # ------------------------------------------------------------------
 
     $PIP_INSTALL \
-        http://download.pytorch.org/whl/cu80/torch-0.4.0-cp36-cp36m-linux_x86_64.whl \
+        http://download.pytorch.org/whl/cu90/torch-0.4.0-cp36-cp36m-linux_x86_64.whl \
         torchvision \
-        && \
+	&& \
+
+# ==================================================================
+# more pakages for opencv image , video
+# from https://github.com/lbeaucourt/Object-detection/blob/master/Dockerfile - line 11,12,27,28
+# ------------------------------------------------------------------
+
+    apt-get install -y libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev && \
+    apt-get install -qqy x11-apps && \
+    apt-get install -y ffmpeg && \
+    pip install -U moviepy && \
 
 # ==================================================================
 # opencv
 # ------------------------------------------------------------------
-
     DEBIAN_FRONTEND=noninteractive $APT_INSTALL \
         libatlas-base-dev \
         libgflags-dev \
@@ -107,7 +116,8 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
           -D BUILD_TESTS=OFF \
           -D BUILD_PERF_TESTS=OFF \
           .. && \
-    make -j"$(nproc)" install && \
+    make -j"$(nproc)" install \
+    && \
 
 
 # ==================================================================
@@ -115,16 +125,14 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # ------------------------------------------------------------------
 
     ldconfig && \
-    apt-get clean && \
-    apt-get autoremove && \
+    apt-get -y clean && \
+    apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* /tmp/* ~/*
-
-
 
 # ==================================================================
 # tensorboard : 6006 , jupyter notebook : 8888
 # ------------------------------------------------------------------
-EXPOSE 8888 6006
+EXPOSE 8888
 
 
 

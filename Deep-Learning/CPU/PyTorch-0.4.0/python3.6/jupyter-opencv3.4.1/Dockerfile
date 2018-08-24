@@ -6,7 +6,7 @@
 # cuDNN		x	
 # python        3.6    (apt)
 # jupyter       latest (pip)
-# pytorch       0.4.0  (pip)
+# pytorch       0.4.0  (pip) : cpu
 # opencv        3.4.1  (git)
 # ==================================================================
 
@@ -75,8 +75,8 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # pytorch
 # ------------------------------------------------------------------
 
-    $PIP_INSTALL \
-        http://download.pytorch.org/whl/cu80/torch-0.4.0-cp36-cp36m-linux_x86_64.whl \
+   $PIP_INSTALL \
+        http://download.pytorch.org/whl/cpu/torch-0.4.0-cp36-cp36m-linux_x86_64.whl \
         torchvision \
         && \
 
