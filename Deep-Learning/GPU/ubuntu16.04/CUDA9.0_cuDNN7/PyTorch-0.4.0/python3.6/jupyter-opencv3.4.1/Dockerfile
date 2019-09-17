@@ -77,7 +77,7 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # ------------------------------------------------------------------
 
     $PIP_INSTALL \
-        http://download.pytorch.org/whl/cu90/torch-0.4.0-cp36-cp36m-linux_x86_64.whl \
+        torch \
         torchvision \
 	&& \
 
@@ -132,7 +132,8 @@ RUN APT_INSTALL="apt-get install -y --no-install-recommends" && \
 # ==================================================================
 # tensorboard : 6006 , jupyter notebook : 8888
 # ------------------------------------------------------------------
-EXPOSE 8888
+# EXPOSE 8888
+# EXPOSE 8888
 
 
 
